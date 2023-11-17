@@ -11,6 +11,7 @@ module com.example.demo {
     requires se.michaelthelin.spotify;
    // requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires org.apache.httpcomponents.core5.httpcore5;
 
     opens com.example.demo to javafx.fxml;
     exports com.example.demo;
