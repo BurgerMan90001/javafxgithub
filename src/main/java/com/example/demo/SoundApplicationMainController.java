@@ -76,6 +76,7 @@ public class SoundApplicationMainController implements Initializable {
             System.out.println("called");
             engine.load(null);
             stage.close();
+            spotifyWebApi.getArtist_Sync();
 
         }
     }
