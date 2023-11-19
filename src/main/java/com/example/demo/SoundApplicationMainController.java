@@ -42,7 +42,7 @@ public class SoundApplicationMainController implements Initializable {
 
 
 
-    public void loadSpotiySignInPage() throws IOException {
+    public void loadSpotiySignInPage() {
         System.out.println("sign in clicked!");
 
         webView.setZoom(0.80);
@@ -60,7 +60,13 @@ public class SoundApplicationMainController implements Initializable {
         // updates the title of the window
         engine.titleProperty().addListener((ov, oldValue, newValue) -> stage.setTitle(newValue));
         // checks when the redirect uri is visited
-        engine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {onRedirectURIOpen(newState);});
+        engine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+            try {
+                onRedirectURIOpen(newState);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         // sets the scene to the webpage and shows it
         soundApplicationMain.setStage(stage);
         soundApplicationMain.getNewStage().setScene(scene);
@@ -70,7 +76,7 @@ public class SoundApplicationMainController implements Initializable {
 
 
     }
-    private void onRedirectURIOpen(State newState) {
+    private void onRedirectURIOpen(State newState) throws IOException {
         if (newState == State.SUCCEEDED && spotifyWebApi.matchesRedirectURIPage(engine.getLocation())) {
             // when the redirect website is visited it fetches the code from the url and sets the code
             spotifyWebApi.getCodeFromUriString(engine.getLocation());
@@ -96,6 +102,7 @@ public class SoundApplicationMainController implements Initializable {
 
             System.out.println(spotifyWebApi.getCurrentUser().getDisplayName());
             spotifyWebApi.getAvailableDevice();
+
 
         }
     }

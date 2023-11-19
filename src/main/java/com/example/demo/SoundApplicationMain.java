@@ -29,7 +29,8 @@ public class SoundApplicationMain extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+        Process p = Runtime.getRuntime().exec("python Test.py");
 
         // DO STUFF WHEn THE APPLICATION IS OPENED
         // SCENE NEEDS TO BE OPENED WHEN THE BUTTON IS CLICKED
