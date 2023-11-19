@@ -1,8 +1,8 @@
 package com.example.demo;
 
-import javafx.fxml.FXMLLoader;
+
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
+
 import javafx.scene.web.*;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -17,6 +17,7 @@ public class SoundApplicationMainController implements Initializable {
 
     private final SpotifyWebApi spotifyWebApi = new SpotifyWebApi();
     private final SoundApplicationMain soundApplicationMain = new SoundApplicationMain();
+    private final short tokenExpiryTimeInSeconds = 3600;
     private WebView webView;
     private WebEngine engine;
     private Scene scene;
@@ -46,9 +47,10 @@ public class SoundApplicationMainController implements Initializable {
 
         webView.setZoom(0.80);
 
-        Map<String, List<String>> headers = new LinkedHashMap<>();
-        headers.put("Set-Cookie", List.of("name=value"));
-        java.net.CookieHandler.getDefault().put(spotifyWebApi.getRedirectUri(), headers);
+
+      //  Map<String, List<String>> headers = new LinkedHashMap<>();
+     //   headers.put("Set-Cookie", List.of("name=value"));
+      //  java.net.CookieHandler.getDefault().put(spotifyWebApi.getRedirectUri(), headers);
 
 
         // loads the uri
@@ -58,7 +60,7 @@ public class SoundApplicationMainController implements Initializable {
         // updates the title of the window
         engine.titleProperty().addListener((ov, oldValue, newValue) -> stage.setTitle(newValue));
         // checks when the redirect uri is visited
-        engine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {onRedirectURIOpen(newState,oldState);});
+        engine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {onRedirectURIOpen(newState);});
         // sets the scene to the webpage and shows it
         soundApplicationMain.setStage(stage);
         soundApplicationMain.getNewStage().setScene(scene);
@@ -68,19 +70,36 @@ public class SoundApplicationMainController implements Initializable {
 
 
     }
-    private void onRedirectURIOpen(State newState,State oldState) {
+    private void onRedirectURIOpen(State newState) {
         if (newState == State.SUCCEEDED && spotifyWebApi.matchesRedirectURIPage(engine.getLocation())) {
             // when the redirect website is visited it fetches the code from the url and sets the code
-            spotifyWebApi.setCodeString(engine.getLocation());
+            spotifyWebApi.getCodeFromUriString(engine.getLocation());
+
+
             spotifyWebApi.getAccessToken();
             System.out.println("called");
             engine.load(null);
             stage.close();
-            spotifyWebApi.getArtist_Sync();
+            // creates a new stage
+            stage = new Stage();
+            stage.show();
+
+
+
+            // function to set tokens
+            spotifyWebApi.setToken();
+            // function to refresh tokens
+            spotifyWebApi.refreshToken();
+
+
+            System.out.println(spotifyWebApi.getArtist("0LcJLqbBmaGUft1e9Mm8HV").getName());
+
+            System.out.println(spotifyWebApi.getCurrentUser().getDisplayName());
+            spotifyWebApi.getAvailableDevice();
 
         }
     }
-    private void openMusicPlayer() throws IOException {
+    private void openMusicPlayer() {
 
     }
 

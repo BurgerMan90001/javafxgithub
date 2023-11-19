@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
-
+import java.util.Objects;
 
 
 public class SoundApplicationMain extends Application {
@@ -35,7 +35,7 @@ public class SoundApplicationMain extends Application {
         // SCENE NEEDS TO BE OPENED WHEN THE BUTTON IS CLICKED
 
          try {
-            Parent root = FXMLLoader.load(getClass().getResource("SignInPage.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("SignInPage.fxml")));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             setStage(primaryStage);
@@ -50,6 +50,8 @@ public class SoundApplicationMain extends Application {
     @Override
     public void stop()  {
         // DO STUFF WHEN THE APPLICATION IS CLOSED!
+
+
         System.exit(0);
     }
 }
